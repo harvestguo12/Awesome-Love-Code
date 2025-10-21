@@ -2,279 +2,196 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>莉莉宝贝，予你满心欢喜</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>莉莉宝贝，我喜欢你很久了</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- 粒子背景特效 -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // 核心配置：修改为你开始喜欢莉莉的日期
-        const LOVE_START_DATE = new Date('2023-01-01'); // 务必替换为真实日期！
+        // 配置恋爱起始日期（修改为你开始喜欢她的第一天）
+        const LOVE_START_DATE = new Date('2023-01-01'); // 示例：2023年1月1日
         
-        // 计算恋爱天数
+        // 计算喜欢的天数
         function calculateLoveDays() {
             const now = new Date();
             const timeDiff = now - LOVE_START_DATE;
-            return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            return days;
         }
 
-        // 实时更新天数+时间
+        // 实时更新天数和时间
         function updateLoveInfo() {
-            document.getElementById('love-days').textContent = calculateLoveDays();
-            document.getElementById('current-time').textContent = new Date().toLocaleTimeString('zh-CN', { 
+            const daysElement = document.getElementById('love-days');
+            const timeElement = document.getElementById('current-time');
+            
+            // 更新天数
+            daysElement.textContent = calculateLoveDays();
+            
+            // 更新当前时间
+            const now = new Date();
+            timeElement.textContent = now.toLocaleTimeString('zh-CN', { 
                 hour: '2-digit', minute: '2-digit', second: '2-digit' 
             });
+            
+            // 每秒更新一次
             setTimeout(updateLoveInfo, 1000);
         }
 
-        // 心动瞬间轮播（滑动+自动播放，添加过渡动画）
-        let currentMomentIndex = 0;
+        // 页面加载完成后初始化
+        window.onload = function() {
+            updateLoveInfo();
+            // 初始化心动瞬间轮播
+            initCarousel();
+        };
+
+        // 心动瞬间轮播功能
         function initCarousel() {
-            const items = document.querySelectorAll('.moment-item');
+            const carousel = document.getElementById('moments-carousel');
+            const items = carousel.querySelectorAll('.moment-item');
+            let currentIndex = 0;
+            
             // 自动轮播
             setInterval(() => {
-                items[currentMomentIndex].classList.add('opacity-0', 'scale-95');
-                setTimeout(() => {
-                    items[currentMomentIndex].classList.add('hidden');
-                    currentMomentIndex = (currentMomentIndex + 1) % items.length;
-                    items[currentMomentIndex].classList.remove('hidden', 'opacity-0', 'scale-95');
-                }, 300);
+                items[currentIndex].classList.add('hidden');
+                currentIndex = (currentIndex + 1) % items.length;
+                items[currentIndex].classList.remove('hidden');
             }, 5000);
-            // 手指滑动切换
-            const carousel = document.getElementById('moments-carousel');
-            let startX = 0;
-            carousel.addEventListener('touchstart', (e) => startX = e.touches[0].clientX);
-            carousel.addEventListener('touchend', (e) => {
-                const endX = e.changedTouches[0].clientX;
-                if (endX - startX > 50) { // 右滑上一张
-                    items[currentMomentIndex].classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => {
-                        items[currentMomentIndex].classList.add('hidden');
-                        currentMomentIndex = (currentMomentIndex - 1 + items.length) % items.length;
-                        items[currentMomentIndex].classList.remove('hidden', 'opacity-0', 'scale-95');
-                    }, 300);
-                } else if (startX - endX > 50) { // 左滑下一张
-                    items[currentMomentIndex].classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => {
-                        items[currentMomentIndex].classList.add('hidden');
-                        currentMomentIndex = (currentMomentIndex + 1) % items.length;
-                        items[currentMomentIndex].classList.remove('hidden', 'opacity-0', 'scale-95');
-                    }, 300);
-                }
-            });
         }
-
-        // 粒子背景初始化
-        function initParticles() {
-            particlesJS('particles-js', {
-                particles: {
-                    number: { value: 50, density: { enable: true, value_area: 800 } },
-                    color: { value: '#ff6b8b' },
-                    shape: { type: 'heart' },
-                    opacity: { value: 0.3, random: true },
-                    size: { value: 6, random: true },
-                    line_linked: { enable: true, distance: 150, color: '#ff6b8b', opacity: 0.2, width: 1 },
-                    move: { enable: true, speed: 1, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-                },
-                interactivity: {
-                    detect_on: 'canvas',
-                    events: {
-                        onhover: { enable: true, mode: 'grab' },
-                        onclick: { enable: true, mode: 'push' },
-                        resize: true
-                    },
-                    modes: {
-                        grab: { distance: 140, line_linked: { opacity: 0.5 } },
-                        push: { particles_nb: 3 }
-                    }
-                },
-                retina_detect: true
-            });
-        }
-
-        // 页面加载初始化
-        window.onload = () => {
-            updateLoveInfo();
-            initCarousel();
-            initParticles();
-        };
     </script>
     <style type="text/tailwindcss">
         @layer utilities {
             .text-shadow {
-                text-shadow: 0 2px 10px rgba(255,107,139,0.3);
-            }
-            .text-shadow-lg {
-                text-shadow: 0 4px 15px rgba(255,107,139,0.4);
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
             .bg-gradient-love {
-                background: linear-gradient(135deg, #ff85a2 0%, #ffc2d1 50%, #ffd6e0 100%);
+                background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
             }
-            .bg-blur {
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
+            .card-hover {
+                transition: all 0.3s ease;
             }
-            .card-glass {
-                background: rgba(255, 255, 255, 0.85);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            .touch-active {
-                -webkit-tap-highlight-color: transparent;
-            }
-            .moment-item {
-                transition: all 0.3s ease-in-out;
-            }
-            .btn-pulse {
-                animation: pulse 2s infinite;
-            }
-            @keyframes pulse {
-                0% { box-shadow: 0 0 0 0 rgba(255,107,139,0.4); }
-                70% { box-shadow: 0 0 0 10px rgba(255,107,139,0); }
-                100% { box-shadow: 0 0 0 0 rgba(255,107,139,0); }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(255,154,158,0.3);
             }
         }
     </style>
 </head>
-<body class="bg-pink-50 min-h-screen font-sans touch-active relative overflow-x-hidden">
-    <!-- 粒子背景（全屏覆盖，不影响交互） -->
-    <div id="particles-js" class="absolute inset-0 z-0 opacity-70"></div>
-
-    <!-- 顶部横幅（梦幻渐变+光影） -->
-    <header class="bg-gradient-love py-8 px-4 shadow-lg relative z-10">
-        <div class="text-center">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-3 text-shadow-lg">
-                莉莉宝贝，予你满心欢喜
+<body class="bg-pink-50 min-h-screen font-sans">
+    <!-- 顶部横幅 -->
+    <header class="bg-gradient-love py-8 px-4 shadow-md">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 text-shadow">
+                莉莉宝贝，我喜欢你
             </h1>
-            <div class="flex items-center justify-center gap-2 mb-2">
-                <<i class="fa fa-heart text-pink-600 animate-pulse text-xl"></</i>
-                <p class="text-lg text-pink-900">喜欢你的第</p>
-                <span id="love-days" class="font-bold text-3xl text-white bg-pink-600 px-3 py-1 rounded-full shadow-md"></span>
-                <p class="text-lg text-pink-900">天</p>
-                <<i class="fa fa-heart text-pink-600 animate-pulse text-xl"></</i>
-            </div>
-            <p class="text-pink-800 mt-1 text-sm opacity-90" id="current-time"></p>
+            <p class="text-xl md:text-2xl text-pink-900 mt-4">
+                <<i class="fa fa-heart text-pink-600 animate-pulse"></</i>
+                喜欢你的第 <span id="love-days" class="font-bold text-2xl md:text-3xl text-white bg-pink-600 px-2 py-1 rounded-full mx-1"></span> 天
+            </p>
+            <p class="text-pink-800 mt-2" id="current-time"></p>
         </div>
     </header>
 
-    <!-- 主体内容（毛玻璃卡片+柔焦阴影） -->
-    <main class="px-4 py-6 relative z-10">
-        <!-- 表白信（精致排版+首字放大） -->
-        <section class="mb-8 card-glass rounded-2xl p-6 shadow-xl card-hover">
-            <h2 class="text-2xl font-bold text-pink-700 mb-5 flex items-center gap-2">
-                <<i class="fa fa-envelope-o text-pink-500"></</i>
-                <span>给莉莉的表白信</span>
+    <!-- 主体内容 -->
+    <main class="container mx-auto px-4 py-10">
+        <!-- 表白信模块 -->
+        <section class="mb-12 bg-white rounded-2xl p-6 md:p-8 shadow-lg card-hover">
+            <h2 class="text-2xl md:text-3xl font-bold text-pink-700 mb-4 flex items-center">
+                <<i class="fa fa-envelope-o mr-3"></</i> 给莉莉的表白信
             </h2>
-            <div class="text-gray-700 leading-relaxed text-base md:text-lg">
+            <div class="text-gray-700 leading-relaxed text-lg">
                 <p class="mb-3">亲爱的莉莉宝贝：</p>
-                <p class="mb-3 first-letter:text-3xl first-letter:font-bold first-letter:text-pink-600 first-letter:mr-1 first-letter:float-left">
-                    从第一次见到你的时候，我的心跳就漏了一拍。你笑起来的样子像春日里的暖阳，能驱散我所有的阴霾；你认真做事时微微蹙起的眉头，让我忍不住想靠近你、守护你。
-                </p>
-                <p class="mb-3">
-                    这<span class="text-pink-600 font-bold">几百个日夜</span>里，我收藏了太多和你的专属回忆：图书馆里并肩自习到闭馆的默契，操场散步时吹过耳畔的晚风，分享耳机时刚好对上的眼神，还有你偶尔犯迷糊时可爱的模样...
-                </p>
-                <p class="mb-3">
-                    我喜欢你的善良、你的坚韧，喜欢你为了目标全力以赴的样子，更喜欢你在我身边时的安心感。我想和你一起看遍山川湖海，一起度过春夏秋冬，一起从青涩走向成熟，把每一个平凡的日子都过成诗。
-                </p>
-                <p class="font-bold text-pink-700 mt-6 text-lg text-center">莉莉，你愿意做我的女朋友吗？</p>
-                <p class="text-right mt-4 text-gray-500 italic">永远喜欢你的我</p>
+                <p class="mb-3">从第一次见到你的时候，我的心跳就漏了一拍。你笑起来的样子像阳光，能驱散我所有的阴霾；你认真做事的模样，让我忍不住想靠近你、保护你。</p>
+                <p class="mb-3">这<span class="text-pink-600 font-bold">几千个日夜</span>里，我收藏了太多和你的回忆：一起在图书馆自习到闭馆，一起在操场散步时的晚风，一起分享耳机听同一首歌的温柔...</p>
+                <p class="mb-3">我喜欢你的善良、你的可爱，喜欢你偶尔的小迷糊，更喜欢你为了目标努力奋斗的样子。我想和你一起看遍山川湖海，一起度过春夏秋冬，一起从青涩走向成熟。</p>
+                <p class="font-bold text-pink-700 mt-6">莉莉，你愿意做我的女朋友吗？</p>
+                <p class="text-right mt-4 text-gray-500">永远喜欢你的我</p>
             </div>
         </section>
 
-        <!-- 心动瞬间（圆角+阴影+文字渐变） -->
-        <section class="mb-8 card-glass rounded-2xl p-6 shadow-xl card-hover">
-            <h2 class="text-2xl font-bold text-pink-700 mb-5 flex items-center gap-2">
-                <<i class="fa fa-camera text-pink-500"></</i>
-                <span>心动瞬间合集</span>
+        <!-- 心动瞬间模块 -->
+        <section class="mb-12 bg-white rounded-2xl p-6 md:p-8 shadow-lg card-hover">
+            <h2 class="text-2xl md:text-3xl font-bold text-pink-700 mb-6 flex items-center">
+                <<i class="fa fa-camera mr-3"></</i> 心动瞬间合集
             </h2>
-            <div id="moments-carousel" class="relative h-56 md:h-64 overflow-hidden rounded-2xl mb-4 shadow-md">
-                <!-- 替换为你们的真实照片（建议尺寸：800x450） -->
+            <div id="moments-carousel" class="relative h-64 md:h-80 overflow-hidden rounded-xl">
+                <!-- 可添加真实照片，替换src和alt内容 -->
                 <div class="moment-item absolute inset-0 flex items-center justify-center">
-                    <img src="https://picsum.photos/id/237/800/450" alt="和莉莉一起的瞬间1" class="w-full h-full object-cover rounded-2xl">
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white p-4 text-sm md:text-base">
+                    <img src="https://picsum.photos/id/237/800/450" alt="和莉莉一起的瞬间1" class="w-full h-full object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-3 text-center">
                         第一次和你一起喝奶茶，你帮我擦去嘴角的奶渍
                     </div>
                 </div>
-                <div class="moment-item absolute inset-0 flex items-center justify-center hidden opacity-0 scale-95">
-                    <img src="https://picsum.photos/id/1005/800/450" alt="和莉莉一起的瞬间2" class="w-full h-full object-cover rounded-2xl">
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white p-4 text-sm md:text-base">
+                <div class="moment-item absolute inset-0 flex items-center justify-center hidden">
+                    <img src="https://picsum.photos/id/1005/800/450" alt="和莉莉一起的瞬间2" class="w-full h-full object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-3 text-center">
                         图书馆里，你认真学习的样子，让我心动不已
                     </div>
                 </div>
-                <div class="moment-item absolute inset-0 flex items-center justify-center hidden opacity-0 scale-95">
-                    <img src="https://picsum.photos/id/1012/800/450" alt="和莉莉一起的瞬间3" class="w-full h-full object-cover rounded-2xl">
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white p-4 text-sm md:text-base">
-                        下雨天，我们共撑一把伞，肩膀挨着肩膀的温柔
+                <div class="moment-item absolute inset-0 flex items-center justify-center hidden">
+                    <img src="https://picsum.photos/id/1012/800/450" alt="和莉莉一起的瞬间3" class="w-full h-full object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-3 text-center">
+                        下雨天，我们共撑一把伞，肩膀挨着肩膀
                     </div>
                 </div>
             </div>
-            <div class="text-center">
-                <button class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-full text-sm shadow-md flex items-center gap-1 mx-auto">
-                    <<i class="fa fa-plus"></</i>
-                    <span>添加更多心动瞬间</span>
+            <div class="mt-4 text-center">
+                <button class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full shadow-md" onclick="addNewMoment()">
+                    <<i class="fa fa-plus mr-1"></</i> 添加更多心动瞬间
                 </button>
             </div>
         </section>
 
-        <!-- 未来约定（彩色图标+渐变背景） -->
-        <section class="mb-8 card-glass rounded-2xl p-6 shadow-xl card-hover">
-            <h2 class="text-2xl font-bold text-pink-700 mb-5 flex items-center gap-2">
-                <<i class="fa fa-star text-pink-500"></</i>
-                <span>想和你一起完成的事</span>
+        <!-- 未来约定模块 -->
+        <section class="mb-12 bg-white rounded-2xl p-6 md:p-8 shadow-lg card-hover">
+            <h2 class="text-2xl md:text-3xl font-bold text-pink-700 mb-4 flex items-center">
+                <<i class="fa fa-star mr-3"></</i> 想和你一起完成的事
             </h2>
-            <div class="flex flex-col gap-4">
-                <div class="flex items-center p-4 border border-pink-100 rounded-xl bg-gradient-to-r from-pink-50 to-white shadow-sm">
-                    <<i class="fa fa-sun-o text-orange-500 mr-4 text-xl"></</i>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center p-3 border border-pink-100 rounded-lg bg-pink-50">
+                    <<i class="fa fa-check-circle text-pink-500 mr-3 text-xl"></</i>
                     <span>一起去看海边的日出，对着大海喊出喜欢你</span>
                 </div>
-                <div class="flex items-center p-4 border border-pink-100 rounded-xl bg-gradient-to-r from-pink-50 to-white shadow-sm">
-                    <<i class="fa fa-cutlery text-red-500 mr-4 text-xl"></</i>
+                <div class="flex items-center p-3 border border-pink-100 rounded-lg bg-pink-50">
+                    <<i class="fa fa-check-circle text-pink-500 mr-3 text-xl"></</i>
                     <span>一起打卡你最想去的网红餐厅，分享同一道菜</span>
                 </div>
-                <div class="flex items-center p-4 border border-pink-100 rounded-xl bg-gradient-to-r from-pink-50 to-white shadow-sm">
-                    <<i class="fa fa-plane text-sky-500 mr-4 text-xl"></</i>
+                <div class="flex items-center p-3 border border-pink-100 rounded-lg bg-pink-50">
+                    <<i class="fa fa-check-circle text-pink-500 mr-3 text-xl"></</i>
                     <span>一起去旅行，把我们的脚印留在更多地方</span>
                 </div>
-                <div class="flex items-center p-4 border border-pink-100 rounded-xl bg-gradient-to-r from-pink-50 to-white shadow-sm">
-                    <<i class="fa fa-heart text-pink-500 mr-4 text-xl"></</i>
+                <div class="flex items-center p-3 border border-pink-100 rounded-lg bg-pink-50">
+                    <<i class="fa fa-check-circle text-pink-500 mr-3 text-xl"></</i>
                     <span>一起努力，成为更好的我们，直到永远</span>
                 </div>
             </div>
         </section>
 
-        <!-- 表白按钮（动态脉冲+渐变） -->
-        <section class="text-center mb-6 relative z-10">
-            <button id="confess-btn" class="bg-gradient-to-r from-pink-600 to-pink-500 text-white text-xl px-12 py-4 rounded-full shadow-2xl transition-all duration-300 btn-pulse flex items-center gap-2 mx-auto">
-                <<i class="fa fa-heart animate-pulse"></</i>
-                <span>莉莉，做我女朋友吧！</span>
+        <!-- 表白按钮 -->
+        <section class="text-center mb-8">
+            <button id="confess-btn" class="bg-pink-600 hover:bg-pink-700 text-white text-xl px-8 py-3 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105">
+                <<i class="fa fa-heart mr-2 animate-pulse"></</i> 莉莉，做我女朋友吧！
             </button>
         </section>
     </main>
 
-    <!-- 底部（简洁渐变） -->
-    <footer class="bg-gradient-to-r from-pink-900 to-pink-800 text-white py-5 px-4 relative z-10">
-        <div class="text-center">
-            <p class="text-sm md:text-base">© 2025 致我最爱的莉莉宝贝</p>
-            <p class="mt-2 text-pink-200 text-xs md:text-sm flex items-center justify-center gap-1">
-                <<i class="fa fa-heart text-pink-400 animate-pulse"></</i>
-                <span>喜欢你的每一天都甜度超标</span>
-                <<i class="fa fa-heart text-pink-400 animate-pulse"></</i>
+    <!-- 底部 -->
+    <footer class="bg-pink-900 text-white py-6 px-4">
+        <div class="container mx-auto text-center">
+            <p>© 2025 致我最爱的莉莉宝贝 | 喜欢你的每一天都充满阳光</p>
+            <p class="mt-2 text-pink-200">
+                <<i class="fa fa-heart text-pink-400 animate-pulse"></</i> 永远爱你 <<i class="fa fa-heart text-pink-400 animate-pulse"></</i>
             </p>
         </div>
     </footer>
 
-    <!-- 表白成功弹窗（美化版） -->
+    <!-- 表白成功弹窗 -->
     <div id="success-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-2xl p-8 w-11/12 max-w-sm text-center shadow-2xl transform transition-all duration-500 scale-100">
-            <div class="text-6xl text-pink-500 mb-6 animate-bounce">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center">
+            <div class="text-5xl text-pink-500 mb-4">
                 <<i class="fa fa-heart"></</i>
             </div>
-            <h3 class="text-2xl font-bold text-pink-700 mb-3 text-shadow">表白成功！</h3>
-            <p class="text-gray-600 mb-8 text-sm md:text-base">
-                莉莉宝贝答应做你的女朋友啦！从此你们就是甜甜的一对～<br>
-                往后余生，三餐四季，皆是浪漫
-            </p>
-            <button onclick="document.getElementById('success-modal').classList.add('hidden')" class="bg-gradient-to-r from-pink-600 to-pink-500 text-white px-8 py-3 rounded-full shadow-xl transition-all duration-300 hover:scale-105">
+            <h3 class="text-2xl font-bold text-pink-700 mb-2">表白成功！</h3>
+            <p class="text-gray-600 mb-6">莉莉宝贝答应做你的女朋友啦！从此你们就是甜甜的一对～</p>
+            <button onclick="closeModal()" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-full shadow-md">
                 一起开启甜蜜之旅
             </button>
         </div>
@@ -284,10 +201,21 @@
         // 表白按钮点击事件
         document.getElementById('confess-btn').addEventListener('click', function() {
             document.getElementById('success-modal').classList.remove('hidden');
-            // 表白音乐（替换为你们的专属歌曲）
-            const audio = new Audio('https://cdn.jsdelivr.net/gh/liyupi/pink-love/song.mp3');
+            // 播放表白成功音乐（可替换为自己喜欢的音乐链接）
+            const audio = new Audio('https://example.com/love-song.mp3');
             audio.play().catch(err => console.log('音乐播放失败:', err));
         });
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        // 添加新的心动瞬间（实际使用时可对接后端或本地存储）
+        function addNewMoment() {
+            alert('请替换图片链接和文字描述，添加你和莉莉的真实心动瞬间～');
+            // 如需实现真实添加功能，可扩展本地存储或后端接口逻辑
+        }
     </script>
 </body>
 </html>
