@@ -6,11 +6,12 @@
     <title>喜欢莉莉宝贝的第141天</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // 固定天数为141天（可根据需要修改起始日期自动计算）
+        // 固定显示喜欢的天数为141天
         const FIXED_DAYS = 141;
         
-        // 实时更新天数和时间
+        // 实时更新时间
         function updateLoveInfo() {
             document.getElementById('love-days').textContent = FIXED_DAYS;
             document.getElementById('current-time').textContent = new Date().toLocaleTimeString('zh-CN', { 
@@ -19,15 +20,16 @@
             setTimeout(updateLoveInfo, 1000);
         }
 
-        // 页面加载完成后初始化
+        // 页面加载初始化
         window.onload = function() {
             updateLoveInfo();
             initHeartAnimation();
-            // 自动播放背景音乐（需用户交互后才能播放，浏览器限制）
+            initParticles();
+            // 监听用户交互播放音乐（浏览器限制）
             document.body.addEventListener('click', playMusic, { once: true });
         };
 
-        // 爱心动画效果
+        // 顶部爱心跳动动画
         function initHeartAnimation() {
             const heart = document.getElementById('big-heart');
             setInterval(() => {
@@ -36,44 +38,73 @@
             }, 2000);
         }
 
-        // 播放背景音乐
+        // 爱心粒子背景初始化
+        function initParticles() {
+            particlesJS('particles-container', {
+                particles: {
+                    number: { value: 60, density: { enable: true, value_area: 800 } },
+                    color: { value: ["#ff6b8b", "#ffccd5", "#ff8fa3"] },
+                    shape: { type: "heart", stroke: { width: 0, color: "#fff" } },
+                    opacity: { 
+                        value: 0.5, random: true,
+                        anim: { enable: true, speed: 1, opacity_min: 0.2, sync: false }
+                    },
+                    size: { 
+                        value: 6, random: true,
+                        anim: { enable: true, speed: 2, size_min: 2, sync: false }
+                    },
+                    line_linked: {
+                        enable: true, distance: 150, color: "#ffccd5", opacity: 0.2, width: 1
+                    },
+                    move: {
+                        enable: true, speed: 1, direction: "none", random: true,
+                        straight: false, out_mode: "out", bounce: false
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "grab" },
+                        onclick: { enable: true, mode: "push" },
+                        resize: true
+                    },
+                    modes: {
+                        grab: { distance: 140, line_linked: { opacity: 0.6 } },
+                        push: { particles_nb: 5 }
+                    }
+                },
+                retina_detect: true
+            });
+        }
+
+        // 播放背景音乐（使用你的GitHub音乐链接）
         function playMusic() {
             const audio = document.getElementById('bg-music');
             audio.play().catch(err => {
-                console.log('音乐需要用户交互后播放');
-                // 显示提示引导用户点击
+                console.log('音乐播放提示：点击网页任意位置即可播放');
                 document.getElementById('music-tip').classList.remove('hidden');
             });
         }
     </script>
     <style type="text/tailwindcss">
         @layer utilities {
-            .text-shadow {
-                text-shadow: 0 2px 4px rgba(255, 99, 132, 0.2);
-            }
-            .bg-love {
-                background-color: #fff5f7;
-            }
-            .heart-beat {
-                transition: transform 0.3s ease;
-            }
-            .text-justify {
-                text-align: justify;
-            }
-            .image-hover {
-                transition: transform 0.5s ease;
-            }
-            .image-hover:hover {
-                transform: scale(1.03);
-            }
+            .text-shadow { text-shadow: 0 2px 4px rgba(255, 99, 132, 0.2); }
+            .bg-love { background-color: #fff5f7; }
+            .heart-beat { transition: transform 0.3s ease; }
+            .text-justify { text-align: justify; }
+            .image-hover { transition: transform 0.5s ease; }
+            .image-hover:hover { transform: scale(1.03); }
+            .content-auto { content-visibility: auto; }
         }
     </style>
 </head>
-<body class="bg-love min-h-screen font-sans">
-    <!-- 背景音乐（默认隐藏控件） -->
-    <audio id="bg-music" loop>
-        <!-- 替换为你的背景音乐链接（建议使用mp3格式） -->
-        <source src="https://cdn.jsdelivr.net/gh/liyupi/pink-love/song.mp3" type="audio/mpeg">
+<body class="bg-love min-h-screen font-sans overflow-x-hidden">
+    <!-- 粒子背景容器 -->
+    <div id="particles-container" class="fixed inset-0 z-0 opacity-60"></div>
+
+    <!-- 背景音乐（已配置你的GitHub音乐链接） -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://raw.githubusercontent.com/harvestguo12/likeLL/refs/heads/main/Web/032/likeLL.mp3" type="audio/mpeg">
     </audio>
 
     <!-- 音乐播放提示 -->
@@ -82,88 +113,58 @@
     </div>
 
     <!-- 顶部天数区域 -->
-    <header class="py-8 px-4 text-center relative overflow-hidden">
+    <header class="py-8 px-4 text-center relative z-10">
         <div class="absolute inset-0 bg-gradient-to-b from-pink-100 to-transparent opacity-70"></div>
         <div class="relative z-10">
             <h1 class="text-2xl md:text-3xl font-bold text-pink-800 mb-6">
                 喜欢莉莉宝贝的第 <span id="love-days" class="text-pink-600 text-3xl md:text-4xl"></span> 天
             </h1>
-            
-            <!-- 大大的爱心 -->
-            <div id="big-heart" class="heart-beat inline-block text-6xl md:text-8xl text-pink-500 mb-4">
-                ❤️
-            </div>
-            
+            <div id="big-heart" class="heart-beat inline-block text-6xl md:text-8xl text-pink-500 mb-4">❤️</div>
             <p class="text-gray-600 text-sm mt-2" id="current-time"></p>
         </div>
     </header>
 
     <!-- 主要内容区 -->
-    <main class="container mx-auto px-5 py-6 max-w-2xl">
+    <main class="container mx-auto px-5 py-6 max-w-2xl relative z-10">
         <!-- 文字回忆区域 -->
-        <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg mb-8">
+        <section class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg mb-8 border border-pink-100">
             <div class="text-gray-700 leading-relaxed text-base md:text-lg space-y-4 text-justify">
                 <p>从短袖穿到厚棉衣，日子悄悄滑过，我已经好久没见到莉莉宝贝了。那些藏在时光里的细碎片段，总在某个不经意的瞬间，突然冒出来。</p>
-
                 <p>她的小窝里，藏着太多“第一次”的印记。第一次泡泡沐浴露，绵密的泡泡裹着甜香，连浴室瓷砖都沾了几分温柔。第一次用牙线也是她教我的，比牙签好用。</p>
-                
                 <p>最喜欢待在她房间的红色灯光里，暖光落在她脸上，衬得她的嘴巴格外好看，水灵灵的像含了糖🍬。我总爱凑在旁边，换着不同角度看，时不时伸手摸摸她的耳朵，或者轻轻揪一下她的头发。她都会笑着说一句“憨憨”。</p>
-                
                 <p>还记得有次我们坐在沙发上，电视里正播着《长安的荔枝》，她随性地把脚搭在我腿上，看一半突然转头，又喊了我声“憨憨”。还有次洗澡，我不小心把水龙头接口拔了下来，水瞬间溅得满地都是，我慌慌张张去拧。</p>
-
                 <p>她总爱穿黑色的衣服，配着黑色丝袜，第一次见面时还紧张地问我“喜欢这个衣服吗”。👔那时候我盯着她眼里闪的光，脑子一片空白，话都说不连贯，只能一个劲点头。每次去她那里，她总准备好满桌吃的喝的：各种新鲜水果，还有外星人水、东鹏特饮、百岁山。</p>
-                
                 <p>记忆里最清晰的画面，是在镜子前。我从后面轻轻抱住她，镜子里的我们挨得特别近，她笑着转头蹭我的下巴，蓝色的发丝扫过我脸颊，痒丝丝的。她好像永远都在笑，大大的眼睛弯成月牙🌙，可我偶尔会偷偷想：她是不是也有藏在心里的烦恼？只是在我面前，没有表现出来。</p>
-                
                 <p>我曾在教师节跟她说“节日快乐”，她每次夸我，我会补上一句“是莉莉妈妈教得好”。其实我从她身上学了更多：学她怎么找身体的敏感点，学她对人的热情与主动，学她总能在平淡日子里找出小惊喜。难怪有那么多人喜欢她，她的笑像小太阳，能暖到人心底，眼睛亮得像星星，一看就移不开眼。</p>
             </div>
         </section>
 
-        <!-- 图片展示区域 -->
+        <!-- 图片展示区域（已配置你的3张图床图片） -->
         <section class="mb-10">
             <h2 class="text-xl font-bold text-pink-700 mb-4 text-center">我们的回忆</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- 第一张图片 -->
                 <div class="rounded-xl overflow-hidden shadow-md image-hover">
-                    <img src="https://picsum.photos/id/237/600/400" alt="和莉莉的回忆1" class="w-full h-48 object-cover">
+                    <img src="https://imgtu.com/uploads/n1ma9r5f/r-file_73510e.webp" alt="和莉莉的回忆1" class="w-full h-48 object-cover">
                 </div>
                 <!-- 第二张图片 -->
                 <div class="rounded-xl overflow-hidden shadow-md image-hover">
-                    <img src="https://picsum.photos/id/1005/600/400" alt="和莉莉的回忆2" class="w-full h-48 object-cover">
+                    <img src="https://imgtu.com/uploads/n1fift5a/r-20250626-4.webp" alt="和莉莉的回忆2" class="w-full h-48 object-cover">
                 </div>
                 <!-- 第三张图片 -->
                 <div class="rounded-xl overflow-hidden shadow-md image-hover">
-                    <img src="https://picsum.photos/id/1012/600/400" alt="和莉莉的回忆3" class="w-full h-48 object-cover">
+                    <img src="https://imgtu.com/uploads/hhmfweho/r-file_60b33a.webp" alt="和莉莉的回忆3" class="w-full h-48 object-cover">
                 </div>
             </div>
         </section>
     </main>
 
     <!-- 底部区域 -->
-    <footer class="bg-pink-800 text-white py-6 px-4">
+    <footer class="bg-pink-800/95 text-white py-6 px-4 relative z-10">
         <div class="container mx-auto text-center max-w-2xl">
             <p class="text-sm md:text-base">愿时光留住所有美好 💕</p>
-            <p class="mt-2 text-pink-200 text-xs">
-                想你的每一天，都值得被纪念
-            </p>
+            <p class="mt-2 text-pink-200 text-xs">想你的每一天，都值得被纪念</p>
         </div>
     </footer>
-
-    <script>
-        // 替换图片链接（将下面的链接替换为你的真实图片链接）
-        const imageUrls = [
-            "https://imgtu.com/upload/hhmfweho/file_60b33a", // 第一张图片
-            "https://你的第二张图片链接", 
-            "https://你的第三张图片链接"
-        ];
-        
-        // 应用图片链接
-        const images = document.querySelectorAll('section img');
-        images.forEach((img, index) => {
-            if (imageUrls[index]) {
-                img.src = imageUrls[index];
-            }
-        });
-    </script>
 </body>
 </html>
