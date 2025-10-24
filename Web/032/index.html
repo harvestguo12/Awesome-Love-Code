@@ -24,7 +24,7 @@
         window.onload = function() {
             updateLoveInfo();
             initHeartAnimation();
-            initParticles();
+            initDualParticles(); // 初始化花朵+爱心双粒子
             // 监听用户交互播放音乐（浏览器限制）
             document.body.addEventListener('click', playMusic, { once: true });
         };
@@ -33,31 +33,36 @@
         function initHeartAnimation() {
             const heart = document.getElementById('big-heart');
             setInterval(() => {
-                heart.classList.add('scale-110');
-                setTimeout(() => heart.classList.remove('scale-110'), 300);
+                heart.classList.add('scale-110', 'text-green-400');
+                setTimeout(() => heart.classList.remove('scale-110', 'text-green-400'), 300);
             }, 2000);
         }
 
-        // 爱心粒子背景初始化
-        function initParticles() {
+        // 双粒子初始化（花朵+爱心，浅绿色系）
+        function initDualParticles() {
             particlesJS('particles-container', {
                 particles: {
-                    number: { value: 60, density: { enable: true, value_area: 800 } },
-                    color: { value: ["#ff6b8b", "#ffccd5", "#ff8fa3"] },
-                    shape: { type: "heart", stroke: { width: 0, color: "#fff" } },
+                    number: { value: 80, density: { enable: true, value_area: 1000 } },
+                    color: { 
+                        value: ["#4ade80", "#86efac", "#bbf7d0", "#fda4af"] // 清新绿+浅粉渐变
+                    },
+                    shape: { 
+                        type: ["heart", "circle"], // 双形态：爱心+圆形（模拟花朵）
+                        stroke: { width: 0, color: "#fff" }
+                    },
                     opacity: { 
-                        value: 0.5, random: true,
-                        anim: { enable: true, speed: 1, opacity_min: 0.2, sync: false }
+                        value: 0.6, random: true,
+                        anim: { enable: true, speed: 1.2, opacity_min: 0.3, sync: false }
                     },
                     size: { 
-                        value: 6, random: true,
-                        anim: { enable: true, speed: 2, size_min: 2, sync: false }
+                        value: 7, random: true,
+                        anim: { enable: true, speed: 2.5, size_min: 3, sync: false }
                     },
                     line_linked: {
-                        enable: true, distance: 150, color: "#ffccd5", opacity: 0.2, width: 1
+                        enable: true, distance: 180, color: "#a7f3d0", opacity: 0.3, width: 1
                     },
                     move: {
-                        enable: true, speed: 1, direction: "none", random: true,
+                        enable: true, speed: 1.5, direction: "none", random: true,
                         straight: false, out_mode: "out", bounce: false
                     }
                 },
@@ -69,8 +74,8 @@
                         resize: true
                     },
                     modes: {
-                        grab: { distance: 140, line_linked: { opacity: 0.6 } },
-                        push: { particles_nb: 5 }
+                        grab: { distance: 160, line_linked: { opacity: 0.7 } },
+                        push: { particles_nb: 8 } // 点击生成更多粒子，增强互动感
                     }
                 },
                 retina_detect: true
@@ -88,47 +93,55 @@
     </script>
     <style type="text/tailwindcss">
         @layer utilities {
-            .text-shadow { text-shadow: 0 2px 4px rgba(255, 99, 132, 0.2); }
-            .bg-love { background-color: #fff5f7; }
-            .heart-beat { transition: transform 0.3s ease; }
+            .text-shadow { text-shadow: 0 2px 4px rgba(52, 211, 153, 0.2); }
+            .bg-love { background-color: #f0fdf4; } /* 清新浅绿色背景 */
+            .heart-beat { transition: all 0.3s ease; }
             .text-justify { text-align: justify; }
             .image-hover { transition: transform 0.5s ease; }
             .image-hover:hover { transform: scale(1.03); }
             .content-auto { content-visibility: auto; }
+            /* 花朵粒子额外样式（增强圆形粒子的花朵感） */
+            .particle-flower::before {
+                content: "🌸";
+                position: absolute;
+                transform: scale(0.5);
+                opacity: 0.6;
+            }
         }
     </style>
 </head>
 <body class="bg-love min-h-screen font-sans overflow-x-hidden">
-    <!-- 粒子背景容器 -->
-    <div id="particles-container" class="fixed inset-0 z-0 opacity-60"></div>
+    <!-- 双粒子背景容器（花朵+爱心） -->
+    <div id="particles-container" class="fixed inset-0 z-0 opacity-70"></div>
 
     <!-- 背景音乐（已配置你的GitHub音乐链接） -->
     <audio id="bg-music" loop preload="auto">
         <source src="https://raw.githubusercontent.com/harvestguo12/likeLL/refs/heads/main/Web/032/likeLL.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- 音乐播放提示 -->
-    <div id="music-tip" class="fixed top-4 right-4 bg-pink-500 text-white px-3 py-1 rounded-full text-sm shadow-md hidden z-50">
+    <!-- 音乐播放提示（改为浅绿色系，贴合整体风格） -->
+    <div id="music-tip" class="fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm shadow-md hidden z-50">
         点击任意位置播放音乐 ❤️
     </div>
 
-    <!-- 顶部天数区域 -->
+    <!-- 顶部天数区域（配色改为清新绿） -->
     <header class="py-8 px-4 text-center relative z-10">
-        <div class="absolute inset-0 bg-gradient-to-b from-pink-100 to-transparent opacity-70"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-green-100 to-transparent opacity-70"></div>
         <div class="relative z-10">
-            <h1 class="text-2xl md:text-3xl font-bold text-pink-800 mb-6">
-                喜欢莉莉宝贝的第 <span id="love-days" class="text-pink-600 text-3xl md:text-4xl"></span> 天
+            <h1 class="text-2xl md:text-3xl font-bold text-green-800 mb-6 text-shadow">
+                喜欢莉莉宝贝的第 <span id="love-days" class="text-green-600 text-3xl md:text-4xl"></span> 天
             </h1>
             <div id="big-heart" class="heart-beat inline-block text-6xl md:text-8xl text-pink-500 mb-4">❤️</div>
             <p class="text-gray-600 text-sm mt-2" id="current-time"></p>
         </div>
     </header>
 
-    <!-- 主要内容区 -->
+    <!-- 主要内容区（卡片改为浅绿色系，更清新） -->
     <main class="container mx-auto px-5 py-6 max-w-2xl relative z-10">
-        <!-- 文字回忆区域 -->
-        <section class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg mb-8 border border-pink-100">
+        <!-- 文字回忆区域（卡片背景+边框改为绿色系） -->
+        <section class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg mb-8 border border-green-100">
             <div class="text-gray-700 leading-relaxed text-base md:text-lg space-y-4 text-justify">
+                <p>点击上方爱心，播放背景音乐哦</p>
                 <p>从短袖穿到厚棉衣，日子悄悄滑过，我已经好久没见到莉莉宝贝了。那些藏在时光里的细碎片段，总在某个不经意的瞬间，突然冒出来。</p>
                 <p>她的小窝里，藏着太多“第一次”的印记。第一次泡泡沐浴露，绵密的泡泡裹着甜香，连浴室瓷砖都沾了几分温柔。第一次用牙线也是她教我的，比牙签好用。</p>
                 <p>最喜欢待在她房间的红色灯光里，暖光落在她脸上，衬得她的嘴巴格外好看，水灵灵的像含了糖🍬。我总爱凑在旁边，换着不同角度看，时不时伸手摸摸她的耳朵，或者轻轻揪一下她的头发。她都会笑着说一句“憨憨”。</p>
@@ -140,31 +153,31 @@
             </div>
         </section>
 
-        <!-- 图片展示区域（已配置你的3张图床图片） -->
+        <!-- 图片展示区域（标题改为绿色系，更协调） -->
         <section class="mb-10">
-            <h2 class="text-xl font-bold text-pink-700 mb-4 text-center">我们的回忆</h2>
+            <h2 class="text-xl font-bold text-green-700 mb-4 text-center text-shadow">我们的回忆</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- 第一张图片 -->
-                <div class="rounded-xl overflow-hidden shadow-md image-hover">
+                <div class="rounded-xl overflow-hidden shadow-md image-hover border border-green-50">
                     <img src="https://imgtu.com/uploads/n1ma9r5f/r-file_73510e.webp" alt="和莉莉的回忆1" class="w-full h-48 object-cover">
                 </div>
                 <!-- 第二张图片 -->
-                <div class="rounded-xl overflow-hidden shadow-md image-hover">
+                <div class="rounded-xl overflow-hidden shadow-md image-hover border border-green-50">
                     <img src="https://imgtu.com/uploads/n1fift5a/r-20250626-4.webp" alt="和莉莉的回忆2" class="w-full h-48 object-cover">
                 </div>
                 <!-- 第三张图片 -->
-                <div class="rounded-xl overflow-hidden shadow-md image-hover">
+                <div class="rounded-xl overflow-hidden shadow-md image-hover border border-green-50">
                     <img src="https://imgtu.com/uploads/hhmfweho/r-file_60b33a.webp" alt="和莉莉的回忆3" class="w-full h-48 object-cover">
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- 底部区域 -->
-    <footer class="bg-pink-800/95 text-white py-6 px-4 relative z-10">
+    <!-- 底部区域（改为绿色系渐变，贴合整体） -->
+    <footer class="bg-green-800/95 text-white py-6 px-4 relative z-10">
         <div class="container mx-auto text-center max-w-2xl">
             <p class="text-sm md:text-base">愿时光留住所有美好 💕</p>
-            <p class="mt-2 text-pink-200 text-xs">想你的每一天，都值得被纪念</p>
+            <p class="mt-2 text-green-200 text-xs">想你的每一天，都值得被纪念</p>
         </div>
     </footer>
 </body>
