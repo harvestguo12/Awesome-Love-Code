@@ -2,220 +2,168 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>莉莉宝贝，我喜欢你很久了</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>喜欢莉莉宝贝的第141天</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
-        // 配置恋爱起始日期（修改为你开始喜欢她的第一天）
-        const LOVE_START_DATE = new Date('2023-01-01'); // 示例：2023年1月1日
+        // 固定天数为141天（可根据需要修改起始日期自动计算）
+        const FIXED_DAYS = 141;
         
-        // 计算喜欢的天数
-        function calculateLoveDays() {
-            const now = new Date();
-            const timeDiff = now - LOVE_START_DATE;
-            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            return days;
-        }
-
         // 实时更新天数和时间
         function updateLoveInfo() {
-            const daysElement = document.getElementById('love-days');
-            const timeElement = document.getElementById('current-time');
-            
-            // 更新天数
-            daysElement.textContent = calculateLoveDays();
-            
-            // 更新当前时间
-            const now = new Date();
-            timeElement.textContent = now.toLocaleTimeString('zh-CN', { 
+            document.getElementById('love-days').textContent = FIXED_DAYS;
+            document.getElementById('current-time').textContent = new Date().toLocaleTimeString('zh-CN', { 
                 hour: '2-digit', minute: '2-digit', second: '2-digit' 
             });
-            
-            // 每秒更新一次
             setTimeout(updateLoveInfo, 1000);
         }
 
         // 页面加载完成后初始化
         window.onload = function() {
             updateLoveInfo();
-            // 初始化心动瞬间轮播
-            initCarousel();
+            initHeartAnimation();
+            // 自动播放背景音乐（需用户交互后才能播放，浏览器限制）
+            document.body.addEventListener('click', playMusic, { once: true });
         };
 
-        // 心动瞬间轮播功能
-        function initCarousel() {
-            const carousel = document.getElementById('moments-carousel');
-            const items = carousel.querySelectorAll('.moment-item');
-            let currentIndex = 0;
-            
-            // 自动轮播
+        // 爱心动画效果
+        function initHeartAnimation() {
+            const heart = document.getElementById('big-heart');
             setInterval(() => {
-                items[currentIndex].classList.add('hidden');
-                currentIndex = (currentIndex + 1) % items.length;
-                items[currentIndex].classList.remove('hidden');
-            }, 5000);
+                heart.classList.add('scale-110');
+                setTimeout(() => heart.classList.remove('scale-110'), 300);
+            }, 2000);
+        }
+
+        // 播放背景音乐
+        function playMusic() {
+            const audio = document.getElementById('bg-music');
+            audio.play().catch(err => {
+                console.log('音乐需要用户交互后播放');
+                // 显示提示引导用户点击
+                document.getElementById('music-tip').classList.remove('hidden');
+            });
         }
     </script>
     <style type="text/tailwindcss">
         @layer utilities {
             .text-shadow {
-                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                text-shadow: 0 2px 4px rgba(255, 99, 132, 0.2);
             }
-            .bg-gradient-love {
-                background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            .bg-love {
+                background-color: #fff5f7;
             }
-            .card-hover {
-                transition: all 0.3s ease;
+            .heart-beat {
+                transition: transform 0.3s ease;
             }
-            .card-hover:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px -5px rgba(255,154,158,0.3);
+            .text-justify {
+                text-align: justify;
+            }
+            .image-hover {
+                transition: transform 0.5s ease;
+            }
+            .image-hover:hover {
+                transform: scale(1.03);
             }
         }
     </style>
 </head>
-<body class="bg-pink-50 min-h-screen font-sans">
-    <!-- 顶部横幅 -->
-    <header class="bg-gradient-love py-8 px-4 shadow-md">
-        <div class="container mx-auto text-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 text-shadow">
-                莉莉宝贝，我喜欢你
+<body class="bg-love min-h-screen font-sans">
+    <!-- 背景音乐（默认隐藏控件） -->
+    <audio id="bg-music" loop>
+        <!-- 替换为你的背景音乐链接（建议使用mp3格式） -->
+        <source src="https://cdn.jsdelivr.net/gh/liyupi/pink-love/song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 音乐播放提示 -->
+    <div id="music-tip" class="fixed top-4 right-4 bg-pink-500 text-white px-3 py-1 rounded-full text-sm shadow-md hidden z-50">
+        点击任意位置播放音乐 ❤️
+    </div>
+
+    <!-- 顶部天数区域 -->
+    <header class="py-8 px-4 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-pink-100 to-transparent opacity-70"></div>
+        <div class="relative z-10">
+            <h1 class="text-2xl md:text-3xl font-bold text-pink-800 mb-6">
+                喜欢莉莉宝贝的第 <span id="love-days" class="text-pink-600 text-3xl md:text-4xl"></span> 天
             </h1>
-            <p class="text-xl md:text-2xl text-pink-900 mt-4">
-                <<i class="fa fa-heart text-pink-600 animate-pulse"></</i>
-                喜欢你的第 <span id="love-days" class="font-bold text-2xl md:text-3xl text-white bg-pink-600 px-2 py-1 rounded-full mx-1"></span> 天
-            </p>
-            <p class="text-pink-800 mt-2" id="current-time"></p>
+            
+            <!-- 大大的爱心 -->
+            <div id="big-heart" class="heart-beat inline-block text-6xl md:text-8xl text-pink-500 mb-4">
+                ❤️
+            </div>
+            
+            <p class="text-gray-600 text-sm mt-2" id="current-time"></p>
         </div>
     </header>
 
-    <!-- 主体内容 -->
-    <main class="container mx-auto px-4 py-10">
-        <!-- 表白信模块 -->
-        <section class="mb-12 bg-white rounded-2xl p-6 md:p-8 shadow-lg card-hover">
-            <h2 class="text-2xl md:text-3xl font-bold text-pink-700 mb-4 flex items-center">
-                <<i class="fa fa-envelope-o mr-3"></</i> 给莉莉的表白信
-            </h2>
-            <div class="text-gray-700 leading-relaxed text-lg">
-                <p class="mb-3">亲爱的莉莉宝贝：</p>
-                <p class="mb-3">从第一次见到你的时候，我的心跳就漏了一拍。你笑起来的样子像阳光，能驱散我所有的阴霾；你认真做事的模样，让我忍不住想靠近你、保护你。</p>
-                <p class="mb-3">这<span class="text-pink-600 font-bold">几千个日夜</span>里，我收藏了太多和你的回忆：一起在图书馆自习到闭馆，一起在操场散步时的晚风，一起分享耳机听同一首歌的温柔...</p>
-                <p class="mb-3">我喜欢你的善良、你的可爱，喜欢你偶尔的小迷糊，更喜欢你为了目标努力奋斗的样子。我想和你一起看遍山川湖海，一起度过春夏秋冬，一起从青涩走向成熟。</p>
-                <p class="font-bold text-pink-700 mt-6">莉莉，你愿意做我的女朋友吗？</p>
-                <p class="text-right mt-4 text-gray-500">永远喜欢你的我</p>
+    <!-- 主要内容区 -->
+    <main class="container mx-auto px-5 py-6 max-w-2xl">
+        <!-- 文字回忆区域 -->
+        <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg mb-8">
+            <div class="text-gray-700 leading-relaxed text-base md:text-lg space-y-4 text-justify">
+                <p>从短袖穿到厚棉衣，日子悄悄滑过，我已经好久没见到莉莉宝贝了。那些藏在时光里的细碎片段，总在某个不经意的瞬间，突然冒出来。</p>
+
+                <p>她的小窝里，藏着太多“第一次”的印记。第一次泡泡沐浴露，绵密的泡泡裹着甜香，连浴室瓷砖都沾了几分温柔。第一次用牙线也是她教我的，比牙签好用。</p>
+                
+                <p>最喜欢待在她房间的红色灯光里，暖光落在她脸上，衬得她的嘴巴格外好看，水灵灵的像含了糖🍬。我总爱凑在旁边，换着不同角度看，时不时伸手摸摸她的耳朵，或者轻轻揪一下她的头发。她都会笑着说一句“憨憨”。</p>
+                
+                <p>还记得有次我们坐在沙发上，电视里正播着《长安的荔枝》，她随性地把脚搭在我腿上，看一半突然转头，又喊了我声“憨憨”。还有次洗澡，我不小心把水龙头接口拔了下来，水瞬间溅得满地都是，我慌慌张张去拧。</p>
+
+                <p>她总爱穿黑色的衣服，配着黑色丝袜，第一次见面时还紧张地问我“喜欢这个衣服吗”。👔那时候我盯着她眼里闪的光，脑子一片空白，话都说不连贯，只能一个劲点头。每次去她那里，她总准备好满桌吃的喝的：各种新鲜水果，还有外星人水、东鹏特饮、百岁山。</p>
+                
+                <p>记忆里最清晰的画面，是在镜子前。我从后面轻轻抱住她，镜子里的我们挨得特别近，她笑着转头蹭我的下巴，蓝色的发丝扫过我脸颊，痒丝丝的。她好像永远都在笑，大大的眼睛弯成月牙🌙，可我偶尔会偷偷想：她是不是也有藏在心里的烦恼？只是在我面前，没有表现出来。</p>
+                
+                <p>我曾在教师节跟她说“节日快乐”，她每次夸我，我会补上一句“是莉莉妈妈教得好”。其实我从她身上学了更多：学她怎么找身体的敏感点，学她对人的热情与主动，学她总能在平淡日子里找出小惊喜。难怪有那么多人喜欢她，她的笑像小太阳，能暖到人心底，眼睛亮得像星星，一看就移不开眼。</p>
             </div>
         </section>
 
-        <!-- 心动瞬间模块 -->
-        <section class="mb-12 bg-white rounded-2xl p-6 md:p-8 shadow-lg card-hover">
-            <h2 class="text-2xl md:text-3xl font-bold text-pink-700 mb-6 flex items-center">
-                <<i class="fa fa-camera mr-3"></</i> 心动瞬间合集
-            </h2>
-            <div id="moments-carousel" class="relative h-64 md:h-80 overflow-hidden rounded-xl">
-                <!-- 可添加真实照片，替换src和alt内容 -->
-                <div class="moment-item absolute inset-0 flex items-center justify-center">
-                    <img src="https://imgtu.com/uploads/hhmfweho/r-file_60b33a.webp" alt="和莉莉一起的瞬间1" class="w-full h-full object-cover">
-                    <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-3 text-center">
-                        第一次和你一起喝奶茶，你帮我擦去嘴角的奶渍
-                    </div>
+        <!-- 图片展示区域 -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-pink-700 mb-4 text-center">我们的回忆</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- 第一张图片 -->
+                <div class="rounded-xl overflow-hidden shadow-md image-hover">
+                    <img src="https://picsum.photos/id/237/600/400" alt="和莉莉的回忆1" class="w-full h-48 object-cover">
                 </div>
-                <div class="moment-item absolute inset-0 flex items-center justify-center hidden">
-                    <img src="https://picsum.photos/id/1005/800/450" alt="和莉莉一起的瞬间2" class="w-full h-full object-cover">
-                    <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-3 text-center">
-                        图书馆里，你认真学习的样子，让我心动不已
-                    </div>
+                <!-- 第二张图片 -->
+                <div class="rounded-xl overflow-hidden shadow-md image-hover">
+                    <img src="https://picsum.photos/id/1005/600/400" alt="和莉莉的回忆2" class="w-full h-48 object-cover">
                 </div>
-                <div class="moment-item absolute inset-0 flex items-center justify-center hidden">
-                    <img src="https://picsum.photos/id/1012/800/450" alt="和莉莉一起的瞬间3" class="w-full h-full object-cover">
-                    <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-3 text-center">
-                        下雨天，我们共撑一把伞，肩膀挨着肩膀
-                    </div>
+                <!-- 第三张图片 -->
+                <div class="rounded-xl overflow-hidden shadow-md image-hover">
+                    <img src="https://picsum.photos/id/1012/600/400" alt="和莉莉的回忆3" class="w-full h-48 object-cover">
                 </div>
             </div>
-            <div class="mt-4 text-center">
-                <button class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full shadow-md" onclick="addNewMoment()">
-                    <<i class="fa fa-plus mr-1"></</i> 添加更多心动瞬间
-                </button>
-            </div>
-        </section>
-
-        <!-- 未来约定模块 -->
-        <section class="mb-12 bg-white rounded-2xl p-6 md:p-8 shadow-lg card-hover">
-            <h2 class="text-2xl md:text-3xl font-bold text-pink-700 mb-4 flex items-center">
-                <<i class="fa fa-star mr-3"></</i> 想和你一起完成的事
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-center p-3 border border-pink-100 rounded-lg bg-pink-50">
-                    <<i class="fa fa-check-circle text-pink-500 mr-3 text-xl"></</i>
-                    <span>一起去看海边的日出，对着大海喊出喜欢你</span>
-                </div>
-                <div class="flex items-center p-3 border border-pink-100 rounded-lg bg-pink-50">
-                    <<i class="fa fa-check-circle text-pink-500 mr-3 text-xl"></</i>
-                    <span>一起打卡你最想去的网红餐厅，分享同一道菜</span>
-                </div>
-                <div class="flex items-center p-3 border border-pink-100 rounded-lg bg-pink-50">
-                    <<i class="fa fa-check-circle text-pink-500 mr-3 text-xl"></</i>
-                    <span>一起去旅行，把我们的脚印留在更多地方</span>
-                </div>
-                <div class="flex items-center p-3 border border-pink-100 rounded-lg bg-pink-50">
-                    <<i class="fa fa-check-circle text-pink-500 mr-3 text-xl"></</i>
-                    <span>一起努力，成为更好的我们，直到永远</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 表白按钮 -->
-        <section class="text-center mb-8">
-            <button id="confess-btn" class="bg-pink-600 hover:bg-pink-700 text-white text-xl px-8 py-3 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105">
-                <<i class="fa fa-heart mr-2 animate-pulse"></</i> 莉莉，做我女朋友吧！
-            </button>
         </section>
     </main>
 
-    <!-- 底部 -->
-    <footer class="bg-pink-900 text-white py-6 px-4">
-        <div class="container mx-auto text-center">
-            <p>© 2025 致我最爱的莉莉宝贝 | 喜欢你的每一天都充满阳光</p>
-            <p class="mt-2 text-pink-200">
-                <<i class="fa fa-heart text-pink-400 animate-pulse"></</i> 永远爱你 <<i class="fa fa-heart text-pink-400 animate-pulse"></</i>
+    <!-- 底部区域 -->
+    <footer class="bg-pink-800 text-white py-6 px-4">
+        <div class="container mx-auto text-center max-w-2xl">
+            <p class="text-sm md:text-base">愿时光留住所有美好 💕</p>
+            <p class="mt-2 text-pink-200 text-xs">
+                想你的每一天，都值得被纪念
             </p>
         </div>
     </footer>
 
-    <!-- 表白成功弹窗 -->
-    <div id="success-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center">
-            <div class="text-5xl text-pink-500 mb-4">
-                <<i class="fa fa-heart"></</i>
-            </div>
-            <h3 class="text-2xl font-bold text-pink-700 mb-2">表白成功！</h3>
-            <p class="text-gray-600 mb-6">莉莉宝贝答应做你的女朋友啦！从此你们就是甜甜的一对～</p>
-            <button onclick="closeModal()" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-full shadow-md">
-                一起开启甜蜜之旅
-            </button>
-        </div>
-    </div>
-
     <script>
-        // 表白按钮点击事件
-        document.getElementById('confess-btn').addEventListener('click', function() {
-            document.getElementById('success-modal').classList.remove('hidden');
-            // 播放表白成功音乐（可替换为自己喜欢的音乐链接）
-            const audio = new Audio('https://example.com/love-song.mp3');
-            audio.play().catch(err => console.log('音乐播放失败:', err));
+        // 替换图片链接（将下面的链接替换为你的真实图片链接）
+        const imageUrls = [
+            "https://imgtu.com/upload/hhmfweho/file_60b33a", // 第一张图片
+            "https://你的第二张图片链接", 
+            "https://你的第三张图片链接"
+        ];
+        
+        // 应用图片链接
+        const images = document.querySelectorAll('section img');
+        images.forEach((img, index) => {
+            if (imageUrls[index]) {
+                img.src = imageUrls[index];
+            }
         });
-
-        // 关闭弹窗
-        function closeModal() {
-            document.getElementById('success-modal').classList.add('hidden');
-        }
-
-        // 添加新的心动瞬间（实际使用时可对接后端或本地存储）
-        function addNewMoment() {
-            alert('请替换图片链接和文字描述，添加你和莉莉的真实心动瞬间～');
-            // 如需实现真实添加功能，可扩展本地存储或后端接口逻辑
-        }
     </script>
 </body>
 </html>
